@@ -1,36 +1,77 @@
+import java.util.Optional;
 
 public class TennisGame3 implements TennisGame {
-    
-    private int p2;
-    private int p1;
-    private String p1N;
-    private String p2N;
+    private static final String[] SCORE_WORDS = new String[] {"Love", "Fifteen", "Thirty", "Forty"}; 
 
-    public TennisGame3(String p1N, String p2N) {
-        this.p1N = p1N;
-        this.p2N = p2N;
+    private int playerTwoScore;
+    private int playerOneScore;
+    private String playerOneName;
+    private String playerTwoName;
+
+    public TennisGame3(String playerOneName, String playerTwoName) {
+        this.playerOneName = playerOneName;
+        this.playerTwoName = playerTwoName;
     }
 
     public String getScore() {
-        String s;
-        if (p1 < 4 && p2 < 4 && !(p1 + p2 == 6)) {
-            String[] p = new String[]{"Love", "Fifteen", "Thirty", "Forty"}; 
-            s = p[p1];
-            return (p1 == p2) ? s + "-All" : s + "-" + p[p2];
-        } else {
-            if (p1 == p2)
-                return "Deuce";
-            s = p1 > p2 ? p1N : p2N;
-            return ((p1-p2)*(p1-p2) == 1) ? "Advantage " + s : "Win for " + s;
+        return tryFormatDraw(playerOneScore, playerTwoScore)
+            .or(() -> tryFormatAdvantage(playerOneName, playerOneScore, playerTwoName, playerTwoScore))
+            .or(() -> tryFormatWin(playerOneName, playerOneScore, playerTwoName, playerTwoScore))
+            .orElseGet(() -> formatTwoComponentScore(playerOneScore, playerTwoScore));
+    }
+
+    private static Optional<String> tryFormatDraw(int playerOneScore, int playerTwoScore) {
+        if (playerOneScore != playerTwoScore) {
+            return Optional.empty();
         }
+
+        if (playerOneScore < 3) {
+            return Optional.of(String.format("%s-All", getScoreWord(playerOneScore)));
+        } else {
+            return Optional.of("Deuce");
+        }
+    }
+
+    private static Optional<String> tryFormatAdvantage(String playerOneName, int playerOneScore, String playerTwoName, int playerTwoScore) {
+        return tryFormatAdvantageForLeftPlayer(playerOneName, playerOneScore, playerTwoScore)
+            .or(() -> tryFormatAdvantageForLeftPlayer(playerTwoName, playerTwoScore, playerOneScore));
+    }
+
+    private static Optional<String> tryFormatAdvantageForLeftPlayer(String leftName, int leftScore, int rightScore) {
+        if (leftScore < 4 || leftScore - rightScore != 1) {
+            return Optional.empty();
+        }
+
+        return Optional.of(String.format("Advantage %s", leftName));
+    }
+
+    private static Optional<String> tryFormatWin(String playerOneName, int playerOneScore, String playerTwoName, int playerTwoScore) {
+        return tryFormatWinForLeftPlayer(playerOneName, playerOneScore, playerTwoScore)
+            .or(() -> tryFormatWinForLeftPlayer(playerTwoName, playerTwoScore, playerOneScore));
+    }
+
+    private static Optional<String> tryFormatWinForLeftPlayer(String leftName, int leftScore, int rightScore) {
+        if (leftScore < 4 || leftScore - rightScore < 2) {
+            return Optional.empty();
+        }
+
+        return Optional.of(String.format("Win for %s", leftName));
+    }
+
+    private static String formatTwoComponentScore(int playerOneScore, int playerTwoScore) {
+        return String.format("%s-%s", getScoreWord(playerOneScore), getScoreWord(playerTwoScore));
+    }
+
+    private static String getScoreWord(int score) {
+        return SCORE_WORDS[score];
     }
     
     public void wonPoint(String playerName) {
-        if (playerName == "player1")
-            this.p1 += 1;
-        else
-            this.p2 += 1;
-        
+        if (playerName.equals(playerOneName)) {
+            this.playerOneScore += 1;
+        } else {
+            this.playerTwoScore += 1;
+        }
     }
 
 }
