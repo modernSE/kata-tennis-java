@@ -1,6 +1,18 @@
 
 public class TennisGame1 implements TennisGame {
-    
+
+    private static final String UNKOWN = "UNKOWN";
+    private static final String PLAYER1 = "player1";
+    private static final String PLAYER2 = "player2";
+    private static final String WIN_FOR = "Win for ";
+    private static final String ADVANTAGE = "Advantage ";
+    private static final String DEUCE = "Deuce";
+    private static final String FIFTEEN = "Fifteen";
+    private static final String ALL = "All";
+    private static final String LOVE = "Love";
+    private static final String THIRTY = "Thirty";
+    private static final String FORTY = "Forty";
+
     private int m_score1 = 0;
     private int m_score2 = 0;
     private String player1Name;
@@ -12,65 +24,69 @@ public class TennisGame1 implements TennisGame {
     }
 
     public void wonPoint(String playerName) {
-        if (playerName == "player1")
+        if (playerName.equals(PLAYER1))
             m_score1 += 1;
         else
             m_score2 += 1;
     }
 
     public String getScore() {
-        String score = "";
-        int tempScore=0;
-        if (m_score1==m_score2)
-        {
-            switch (m_score1)
-            {
-                case 0:
-                        score = "Love-All";
-                    break;
-                case 1:
-                        score = "Fifteen-All";
-                    break;
-                case 2:
-                        score = "Thirty-All";
-                    break;
-                default:
-                        score = "Deuce";
-                    break;
-                
-            }
+        if (playersHaveEqualPoints(m_score1, m_score2)) {
+            return getScoreForEqualPoints(m_score1);
+        } else if (eitherPlayHasAtLeastFourPoints(m_score1, m_score2)) {
+            return getScoreForWinOrAdvantage(m_score1, m_score2);
+        } else {
+            return getScore(m_score1) + "-" + getScore(m_score2);
         }
-        else if (m_score1>=4 || m_score2>=4)
-        {
-            int minusResult = m_score1-m_score2;
-            if (minusResult==1) score ="Advantage player1";
-            else if (minusResult ==-1) score ="Advantage player2";
-            else if (minusResult>=2) score = "Win for player1";
-            else score ="Win for player2";
+    }
+
+    private boolean playersHaveEqualPoints(int player1Points, int player2Points) {
+        return player1Points == player2Points;
+    }
+
+    private boolean eitherPlayHasAtLeastFourPoints(int player1Points, int player2Points) {
+        return player1Points >= 4 || player2Points >= 4;
+    }
+
+    private String getScoreForEqualPoints(int points) {
+        switch (m_score1) {
+        case 0:
+            return LOVE + "-" + ALL;
+        case 1:
+            return FIFTEEN + "-" + ALL;
+        case 2:
+            return THIRTY + "-" + ALL;
+        default:
+            return DEUCE;
+
         }
-        else
-        {
-            for (int i=1; i<3; i++)
-            {
-                if (i==1) tempScore = m_score1;
-                else { score+="-"; tempScore = m_score2;}
-                switch(tempScore)
-                {
-                    case 0:
-                        score+="Love";
-                        break;
-                    case 1:
-                        score+="Fifteen";
-                        break;
-                    case 2:
-                        score+="Thirty";
-                        break;
-                    case 3:
-                        score+="Forty";
-                        break;
-                }
-            }
+    }
+
+    private String getScoreForWinOrAdvantage(int player1Points, int player2Points) {
+        int minusResult = player1Points - player2Points;
+
+        if (minusResult == 1) {
+            return ADVANTAGE + PLAYER1;
+        } else if (minusResult == -1) {
+            return ADVANTAGE + PLAYER2;
+        } else if (minusResult >= 2) {
+            return WIN_FOR + PLAYER1;
+        } else {
+            return WIN_FOR + PLAYER2;
         }
-        return score;
+    }
+
+    private String getScore(int points) {
+        switch (points) {
+        case 0:
+            return LOVE;
+        case 1:
+            return FIFTEEN;
+        case 2:
+            return THIRTY;
+        case 3:
+            return FORTY;
+        }
+        return UNKOWN;
     }
 }
