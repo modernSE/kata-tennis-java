@@ -101,4 +101,11 @@ public class TennisTest {
         checkAllScores(game);
     }
 
+    
+    @Test
+    public void checkAllScoresTennisGameProposal() {
+        TennisGame game = new TennisGameProposal("player1", "player2");
+        checkAllScores(game);
+    }
+
 }
