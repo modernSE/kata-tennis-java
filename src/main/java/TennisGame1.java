@@ -18,35 +18,56 @@ public class TennisGame1 implements TennisGame {
             m_score2 += 1;
     }
 
+    public String drawEvaluator(int m_score1) {
+        switch (m_score1)
+        {
+            case 0:
+                return "Love-All";
+            case 1:
+                return "Fifteen-All";
+            case 2:
+                return "Thirty-All";
+            default:
+                return "Deuce";            
+        }
+    }
+
+    public String gameplayEvaluator(int tempScore) {
+        switch(tempScore)
+        {
+            case 0:
+                return "Love";
+            case 1:
+                return "Fifteen";
+            case 2:
+                return "Thirty";
+            default:
+                return "Forty";
+        }
+    }
+
+    public String winEvaluator(int m_score1, int m_score2) {
+        int minusResult = m_score1-m_score2;
+        if (minusResult==1) return "Advantage player1";
+        else if (minusResult ==-1) return "Advantage player2";
+        else if (minusResult>=2) return "Win for player1";
+        else return "Win for player2";
+    }
+
+    public boolean isEndOfGameScore()
+    {
+        return m_score1>=4 || m_score2>=4;
+    }
+
     public String getScore() {
         String score = "";
         int tempScore=0;
         if (m_score1==m_score2)
         {
-            switch (m_score1)
-            {
-                case 0:
-                        score = "Love-All";
-                    break;
-                case 1:
-                        score = "Fifteen-All";
-                    break;
-                case 2:
-                        score = "Thirty-All";
-                    break;
-                default:
-                        score = "Deuce";
-                    break;
-                
-            }
+            score = drawEvaluator(m_score1);
         }
-        else if (m_score1>=4 || m_score2>=4)
-        {
-            int minusResult = m_score1-m_score2;
-            if (minusResult==1) score ="Advantage player1";
-            else if (minusResult ==-1) score ="Advantage player2";
-            else if (minusResult>=2) score = "Win for player1";
-            else score ="Win for player2";
+        else if (isEndOfGameScore()) {
+            score = winEvaluator(m_score1, m_score2);
         }
         else
         {
@@ -54,21 +75,7 @@ public class TennisGame1 implements TennisGame {
             {
                 if (i==1) tempScore = m_score1;
                 else { score+="-"; tempScore = m_score2;}
-                switch(tempScore)
-                {
-                    case 0:
-                        score+="Love";
-                        break;
-                    case 1:
-                        score+="Fifteen";
-                        break;
-                    case 2:
-                        score+="Thirty";
-                        break;
-                    case 3:
-                        score+="Forty";
-                        break;
-                }
+                score += gameplayEvaluator(tempScore);
             }
         }
         return score;
