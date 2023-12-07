@@ -5,80 +5,90 @@ public class TennisGame2 implements TennisGame
     private int playerOnePoints = 0;
     private int playerTwoPoints = 0;
     
-    private String playerOneResult = "";
-    private String playerTwoResult = "";
+    private String playerOneScoreValue = "";
+    private String playerTwoScoreValue = "";
 
-    //TODO: remove v
-    private String player1Name;
-    private String player2Name;
-
-    public TennisGame2(String player1Name, String player2Name) {
-        this.player1Name = player1Name;
-        this.player2Name = player2Name;
+    public TennisGame2() {
     }
 
-    public String getScore(){
-        String score = "";
+    public String getResult(){
+        String result = baseScore().orElse("");
+        Optional<String> to0Score = to0Score();
+        result = to0Score.isPresent() ? to0Score.get() : result;
+        Optional<String> smaller4Score = getSmaller4Score();
+        result = smaller4Score.isPresent() ? smaller4Score.get() : result;
+        Optional<String> scoreComplex = getScoreForComplexPoints();
+        return scoreComplex.isPresent() ? scoreComplex.get() : result;
+    }
+
+    private Optional<String> baseScore() {
+        String result = null;
         if (playerOnePoints == playerTwoPoints && playerOnePoints < 4)
         {
             if (playerOnePoints < 3) {
-                score = getScoreForSimplePoints(playerOnePoints);
+                result = getScoreForSimplePoints(playerOnePoints);
             }
-            score += "-All";
+            result += "-All";
         }
         if (playerOnePoints==playerTwoPoints && playerOnePoints>=3) {
-            score = "Deuce";
+            result = "Deuce";
         }
-        
+        return Optional.ofNullable(result);
+    }
+
+    private Optional<String> to0Score() {
+        String result = null;
         if (playerOnePoints > 0 && playerTwoPoints==0)
         {
             if (playerOnePoints <= 3) {
-                playerOneResult = getScoreForSimplePoints(playerOnePoints);
+                playerOneScoreValue = getScoreForSimplePoints(playerOnePoints);
             }
             
-            playerTwoResult = "Love";
-            score = getScoreFromResults();
+            playerTwoScoreValue = "Love";
+            result = getResultFromScoreValues();
         }
         if (playerTwoPoints > 0 && playerOnePoints==0)
         {
             if (playerTwoPoints <= 3) {
-                playerTwoResult = getScoreForSimplePoints(playerTwoPoints);
+                playerTwoScoreValue = getScoreForSimplePoints(playerTwoPoints);
             }
             
-            playerOneResult = "Love";
-            score = getScoreFromResults();
+            playerOneScoreValue = "Love";
+            result = getResultFromScoreValues();
         }
-        
+        return Optional.ofNullable(result);
+    }
+
+    private Optional<String> getSmaller4Score() {
+        String result = null;
         if (playerOnePoints>playerTwoPoints && playerOnePoints < 4)
         {
             if (playerOnePoints == 2 || playerOnePoints == 3) {
-                playerOneResult = getScoreForSimplePoints(playerOnePoints);
+                playerOneScoreValue = getScoreForSimplePoints(playerOnePoints);
             }
 
             if (playerTwoPoints==1 || playerTwoPoints==2) {
-                playerTwoResult = getScoreForSimplePoints(playerTwoPoints);
+                playerTwoScoreValue = getScoreForSimplePoints(playerTwoPoints);
             }
-            score = getScoreFromResults();
+            result = getResultFromScoreValues();
         }
 
         if (playerTwoPoints>playerOnePoints && playerTwoPoints < 4)
         {
-            if (playerTwoPoints == 2 || playerTwoPoints == 3) {
-                playerTwoResult = getScoreForSimplePoints(playerTwoPoints);
-            }
-
             if (playerOnePoints==1 || playerOnePoints==2) {
-                playerOneResult = getScoreForSimplePoints(playerOnePoints);
+                playerOneScoreValue = getScoreForSimplePoints(playerOnePoints);
             }
-            score = getScoreFromResults();
-        }
-        
-        Optional<String> scoreComplex = getScoreForComplexPoints();
-        return scoreComplex.isPresent() ? scoreComplex.get() : score;
-    }
 
-    private String getScoreFromResults() {
-        return playerOneResult + "-" + playerTwoResult;
+            if (playerTwoPoints == 2 || playerTwoPoints == 3) {
+                playerTwoScoreValue = getScoreForSimplePoints(playerTwoPoints);
+            }
+            result = getResultFromScoreValues();
+        }
+        return Optional.ofNullable(result);
+    } 
+
+    private String getResultFromScoreValues() {
+        return playerOneScoreValue + "-" + playerTwoScoreValue;
     }
 
     private String getScoreForSimplePoints(final int points) {
