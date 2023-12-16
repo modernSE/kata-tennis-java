@@ -19,7 +19,7 @@ public class TennisTest {
     @ParameterizedTest
     @MethodSource("getAllScores")
     public void checkAllScoresTennisGame2(int givenPlayer1Score, int givenPlayer2Score, String expectedScore) {
-        TennisGame2 game = new TennisGame2("player1", "player2");
+        TennisGame2 game = new TennisGame2();
         checkAllScores(game, givenPlayer1Score, givenPlayer2Score, expectedScore);
     }
 
@@ -45,7 +45,7 @@ public class TennisTest {
             if (i < givenPlayer2Score)
                 game.wonPoint("player2");
         }
-        assertEquals(expectedScore, game.getScore());
+        assertEquals(expectedScore, game.getResult());
     }
 
     static Collection<Object[]> getAllScores() {
