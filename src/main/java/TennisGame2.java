@@ -1,104 +1,123 @@
+import java.util.HashMap;
+import java.util.Map;
 
 public class TennisGame2 implements TennisGame
 {
-    public int P1point = 0;
-    public int P2point = 0;
-    
-    public String P1res = "";
-    public String P2res = "";
-    private String player1Name;
-    private String player2Name;
 
-    public TennisGame2(String player1Name, String player2Name) {
-        this.player1Name = player1Name;
-        this.player2Name = player2Name;
-    }
+    
+    public final String PLAYER_ONE = "player1";
+    public final String PLAYER_TWO = "player2";
+
+    Map<String, Integer> pointMap = new HashMap<>(Map.of(
+        PLAYER_ONE, 0, //
+        PLAYER_TWO, 0 //
+    ));
+
+    Map<String, String> resMap = new HashMap<>(Map.of(
+        PLAYER_ONE, "", //
+        PLAYER_TWO, "" //
+    ));
 
     public String getScore(){
         String score = "";
-        if (P1point == P2point && P1point < 4)
-        {
-            if (P1point==0)
-                score = "Love";
-            if (P1point==1)
-                score = "Fifteen";
-            if (P1point==2)
-                score = "Thirty";
-            score += "-All";
-        }
-        if (P1point==P2point && P1point>=3)
-            score = "Deuce";
-        
-        if (P1point > 0 && P2point==0)
-        {
-            if (P1point==1)
-                P1res = "Fifteen";
-            if (P1point==2)
-                P1res = "Thirty";
-            if (P1point==3)
-                P1res = "Forty";
-            
-            P2res = "Love";
-            score = P1res + "-" + P2res;
-        }
-        if (P2point > 0 && P1point==0)
-        {
-            if (P2point==1)
-                P2res = "Fifteen";
-            if (P2point==2)
-                P2res = "Thirty";
-            if (P2point==3)
-                P2res = "Forty";
-            
-            P1res = "Love";
-            score = P1res + "-" + P2res;
+        if(pointMap.get(PLAYER_ONE) == pointMap.get(PLAYER_TWO)){
+            score = createEqualScore();
         }
         
-        if (P1point>P2point && P1point < 4)
+        if (pointMap.get(PLAYER_ONE) > 0 && pointMap.get(PLAYER_TWO)==0)
         {
-            if (P1point==2)
-                P1res="Thirty";
-            if (P1point==3)
-                P1res="Forty";
-            if (P2point==1)
-                P2res="Fifteen";
-            if (P2point==2)
-                P2res="Thirty";
-            score = P1res + "-" + P2res;
+           score = getScoreOneZero(PLAYER_ONE, PLAYER_TWO);
         }
-        if (P2point>P1point && P2point < 4)
+        if (pointMap.get(PLAYER_TWO) > 0 && pointMap.get(PLAYER_ONE)==0)
         {
-            if (P2point==2)
-                P2res="Thirty";
-            if (P2point==3)
-                P2res="Forty";
-            if (P1point==1)
-                P1res="Fifteen";
-            if (P1point==2)
-                P1res="Thirty";
-            score = P1res + "-" + P2res;
+            score = getScoreOneZero(PLAYER_TWO, PLAYER_ONE);
         }
         
-        if (P1point > P2point && P2point >= 3)
+        if (pointMap.get(PLAYER_ONE) > pointMap.get(PLAYER_TWO) && pointMap.get(PLAYER_ONE) < 4)
+        {
+            score = getScoreSmallerFour(PLAYER_ONE, PLAYER_TWO);
+        }
+        if (pointMap.get(PLAYER_TWO) > pointMap.get(PLAYER_ONE) && pointMap.get(PLAYER_TWO) < 4)
+        {
+            score = getScoreSmallerFour(PLAYER_TWO, PLAYER_ONE);
+        }
+        
+        if (pointMap.get(PLAYER_ONE) > pointMap.get(PLAYER_TWO) && pointMap.get(PLAYER_TWO) >= 3)
         {
             score = "Advantage player1";
         }
         
-        if (P2point > P1point && P1point >= 3)
+        if (pointMap.get(PLAYER_TWO) > pointMap.get(PLAYER_ONE) && pointMap.get(PLAYER_ONE) >= 3)
         {
             score = "Advantage player2";
         }
         
-        if (P1point>=4 && P2point>=0 && (P1point-P2point)>=2)
+        if (pointMap.get(PLAYER_ONE) >=4 && pointMap.get(PLAYER_TWO) >=0 && (pointMap.get(PLAYER_ONE)-pointMap.get(PLAYER_TWO))>=2)
         {
             score = "Win for player1";
         }
-        if (P2point>=4 && P1point>=0 && (P2point-P1point)>=2)
+
+        if (pointMap.get(PLAYER_TWO) >=4 && pointMap.get(PLAYER_ONE) >=0 && (pointMap.get(PLAYER_TWO)-pointMap.get(PLAYER_ONE))>=2)
         {
             score = "Win for player2";
         }
         return score;
     }
+
+    private String createEqualScore(){
+        if (pointMap.get(PLAYER_ONE)>=3)
+           return "Deuce";
+        String score = "";
+        if (pointMap.get(PLAYER_ONE) < 3)
+        {
+            switch(pointMap.get(PLAYER_ONE)){
+                case 0: 
+                    score = "Love";
+                    break;
+                case 1: 
+                    score = "Fifteen";
+                    break;
+                case 2: score = "Thirty";
+            }
+            score += "-All";
+        }
+        return score;
+    }
+
+    private String getScoreOneZero(String playerWithPoints, String playerWithoutPoints){
+        switch(pointMap.get(playerWithPoints)){
+            case 1:
+                resMap.put(playerWithPoints, "Fifteen");
+                break;
+            case 2: 
+                resMap.put(playerWithPoints, "Thirty");
+                break;
+            case 3:
+                resMap.put(playerWithPoints, "Forty");
+        }
+    
+        resMap.put(playerWithoutPoints, "Love");
+        return resMap.get(PLAYER_ONE) + "-" + resMap.get(PLAYER_TWO);
+    }
+
+    private String getScoreSmallerFour(String playerWithMorePoints, String playerWithLessPoints){
+        switch(pointMap.get(playerWithMorePoints)){
+            case 2: 
+                resMap.put(playerWithMorePoints, "Thirty");
+                break; 
+            case 3: 
+                resMap.put(playerWithMorePoints, "Forty");
+        }
+
+        switch(pointMap.get(playerWithLessPoints)){
+            case 2: 
+                resMap.put(playerWithLessPoints, "Fifteen");
+                break; 
+            case 3: 
+                resMap.put(playerWithLessPoints, "Thirty");
+        }
+        return resMap.get(PLAYER_ONE) + "-" + resMap.get(PLAYER_TWO);
+}
     
     public void SetP1Score(int number){
         
@@ -119,11 +138,11 @@ public class TennisGame2 implements TennisGame
     }
     
     public void P1Score(){
-        P1point++;
+        pointMap.put(PLAYER_ONE, pointMap.get(PLAYER_ONE)+1);
     }
     
     public void P2Score(){
-        P2point++;
+        pointMap.put(PLAYER_TWO, pointMap.get(PLAYER_TWO)+1);
     }
 
     public void wonPoint(String player) {
