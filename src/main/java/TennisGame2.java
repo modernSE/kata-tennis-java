@@ -33,10 +33,10 @@ public class TennisGame2 implements TennisGame
         }
 
         if (winnerExists()) {
-            return player1Point > player2Point ? "Win for " + player1Name : "Win for " + player2Name;
+            return "Win for " + (player1Point > player2Point ? player1Name : player2Name);
         }
 
-        return player1Point > player2Point ? "Advantage "  +player1Name : "Advantage " + player2Name;
+        return "Advantage " + (player1Point > player2Point ? player1Name :  player2Name);
     }
 
     private boolean winnerExists(){
