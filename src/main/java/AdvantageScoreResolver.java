@@ -9,8 +9,7 @@ public class AdvantageScoreResolver implements ScoreResolver {
 
     @Override
     public boolean isApplicable(PlayerState player1, PlayerState player2) {
-        int difference = Math.abs(player1.score() - player2.score());
-        return player1.score() < 4 && player2.score() < 4 && difference > 0;
+        return player1.score() >= 3 && player2.score() >= 3 && Math.abs(player1.score() - player2.score()) == 1;
     }
 
 }

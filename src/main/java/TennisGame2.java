@@ -19,7 +19,7 @@ public class TennisGame2 implements TennisGame {
 
     public String getScore() {
 
-        List<ScoreResolver> resolvers = List.of(new WinScoreResolver(), new AdvantageScoreResolver(), new IntermediateScoreResolver());
+        List<ScoreResolver> resolvers = List.of(new WinScoreResolver(), new AdvantageScoreResolver());
 
         var player1 = new PlayerState(player1Name, P1point);
         var player2 = new PlayerState(player2Name, P2point);
