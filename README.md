@@ -20,10 +20,7 @@ Here is a description of the problem this code is designed to solve: [Tennis Kat
 * What would you say to your boss about the value of this refactoring work? Was there more reason to do it over and above the extra billable hour or so?
 
 ## Aufgabe I
-Wir wollen die Implementierung von `TennisGame1` cleaner machen. Notiert, welche Probleme hat der aktuelle Code? Anschließend beheben, dabei stets auf die durchlaufenen Tests achten.
+Wir wollen die Implementierung von `TennisGame2` cleaner machen. Notiert, welche Probleme hat der aktuelle Code? Anschließend beheben, dabei stets auf die durchlaufenen Tests achten.
 
 ## Aufgabe II
-Es gibt noch drei weitere alternative Implementierungen (`TennisGame2`-`TennisGame4`). Schaut euch alle drei an, sucht die für euch beste Variante aus und refactored diese.
-
-
-[![Gitpod Ready-to-Code](https://img.shields.io/badge/Gitpod-Ready--to--Code-blue?logo=gitpod)](https://gitpod.io/#https://github.com/modernSE/kata-tennis-java) 
+Es gibt noch drei weitere alternative Implementierungen (`TennisGame1`-`TennisGame4`). Schaut euch alle drei an, sucht die für euch beste Variante aus und refactored diese.
