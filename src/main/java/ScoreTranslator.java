@@ -1,10 +1,20 @@
 public class ScoreTranslator {
 
-    public static String translateGameOver(int P1point, int P2point) {
+    private String player1Name;
+    private String player2Name;
+
+
+    public ScoreTranslator(String player1Name, String player2Name) {
+        this.player1Name = player1Name;
+        this.player2Name = player2Name;
+
+    }
+
+    public String translateGameOver(int P1point, int P2point) {
         return "Win for " + getLeadingPlayerName(P1point, P2point);
     }
 
-    public static String translateTied(int points) {
+    public String translateTied(int points) {
         if (points <= 2) {
             return translatePoint(points) + "-All";
         } else {
@@ -12,15 +22,15 @@ public class ScoreTranslator {
         }
     }
 
-    public static String translateAdvantage(int P1point, int P2point) {
+    public String translateAdvantage(int P1point, int P2point) {
         return "Advantage " + getLeadingPlayerName(P1point, P2point);
     }
 
-    public static String translateRegular(int P1point, int P2point) {
+    public String translateRegular(int P1point, int P2point) {
         return translatePoint(P1point) + "-" + translatePoint(P2point);
     }
 
-    private static String translatePoint(int point) {
+    private String translatePoint(int point) {
         return switch (point) {
             case 0 -> "Love";
             case 1 -> "Fifteen";
@@ -30,7 +40,7 @@ public class ScoreTranslator {
         };
     }
 
-    private static String getLeadingPlayerName(int P1point, int P2point) {
-        return P1point > P2point ? "player1" : "player2";
+    private String getLeadingPlayerName(int P1point, int P2point) {
+        return P1point > P2point ? player1Name : player2Name;
     }
 }

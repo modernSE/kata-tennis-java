@@ -5,23 +5,21 @@ public class TennisGame2 implements TennisGame {
 
     public String P1res = "";
     public String P2res = "";
-    private String player1Name;
-    private String player2Name;
+    private ScoreTranslator scoreTranslator; 
 
     public TennisGame2(String player1Name, String player2Name) {
-        this.player1Name = player1Name;
-        this.player2Name = player2Name;
+        this.scoreTranslator = new ScoreTranslator(player1Name, player2Name);
     }
 
     public String getScore() {
         if (scoreIsGameOver(P1point, P2point)) {
-            return ScoreTranslator.translateGameOver(P1point, P2point);
+            return scoreTranslator.translateGameOver(P1point, P2point);
         } else if (scoreIsTied(P1point, P2point)) {
-            return ScoreTranslator.translateTied(P1point);
+            return scoreTranslator.translateTied(P1point);
         } else if (scoreIsAdvantage(P1point, P2point)) {
-            return ScoreTranslator.translateAdvantage(P1point, P2point);
+            return scoreTranslator.translateAdvantage(P1point, P2point);
         } else {
-            return ScoreTranslator.translateRegular(P1point, P2point);
+            return scoreTranslator.translateRegular(P1point, P2point);
         }
     }
 
