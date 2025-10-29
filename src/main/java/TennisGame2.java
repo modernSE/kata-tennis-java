@@ -1,3 +1,4 @@
+import java.util.Map;
 
 public class TennisGame2 implements TennisGame
 {
@@ -9,25 +10,30 @@ public class TennisGame2 implements TennisGame
     private String player1Name;
     private String player2Name;
 
+    private Map<Integer, String> scoreToDescription = Map.of(0, "Love", 1, "Fifteen", 2, "Thirty", 3, "Forty");
+
     public TennisGame2(String player1Name, String player2Name) {
         this.player1Name = player1Name;
         this.player2Name = player2Name;
     }
 
+    private String equalScoreProvider(int score) {
+        if(score >= 3) {
+            return "Deuce";
+        }
+        return scoreToDescription.get(score) + "-All";
+    }
+
+    private String playerOneInLeadScoreProvider(int score1, int score2) {
+        return scoreToDescription.get(score1) + scoreToDescription.get(score2);
+    }
+
     public String getScore(){
         String score = "";
-        if (P1point == P2point && P1point < 4)
+        if (P1point == P2point)
         {
-            if (P1point==0)
-                score = "Love";
-            if (P1point==1)
-                score = "Fifteen";
-            if (P1point==2)
-                score = "Thirty";
-            score += "-All";
+            score += equalScoreProvider(P1point);
         }
-        if (P1point==P2point && P1point>=3)
-            score = "Deuce";
         
         if (P1point > 0 && P2point==0)
         {
