@@ -3,7 +3,6 @@ public class ScoreTranslator {
     private String player1Name;
     private String player2Name;
 
-
     public ScoreTranslator(String player1Name, String player2Name) {
         this.player1Name = player1Name;
         this.player2Name = player2Name;
