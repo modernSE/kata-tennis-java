@@ -1,13 +1,39 @@
+import java.util.HashMap;
+import java.util.Map;
 
 public class TennisGame2 implements TennisGame
 {
-    public int P1point = 0;
-    public int P2point = 0;
+    private static final String ADVANTAGE_PLAYER2 = "Advantage player2";
+    private static final String ADVANTAGE_PLAYER1 = "Advantage player1";
+    private static final String DEUCE = "Deuce";
+    private static final String ALL = "-All";
+    public int player1point = 0;
+    public int player2point = 0;
     
-    public String P1res = "";
-    public String P2res = "";
+    public String player1res = "";
+    public String player2res = "";
     private String player1Name;
     private String player2Name;
+
+    
+
+    static final class TennisScorboardMap {
+        private static TennisScorboardMap instance;
+        private Map<Integer, String> tennisScorboardMap = new HashMap<Integer, String>();
+        private TennisScorboardMap() {
+            tennisScorboardMap.put(0, "Love");
+            tennisScorboardMap.put(1, "Fifteen");
+            tennisScorboardMap.put(2, "Thirty");
+            tennisScorboardMap.put(3, "Forty");
+        }
+
+        static String getWord(int number) {
+            if (instance == null) {
+                instance = new TennisScorboardMap();
+            }
+            return instance.tennisScorboardMap.get(number);
+        }
+    }
 
     public TennisGame2(String player1Name, String player2Name) {
         this.player1Name = player1Name;
@@ -16,88 +42,58 @@ public class TennisGame2 implements TennisGame
 
     public String getScore(){
         String score = "";
-        if (P1point == P2point && P1point < 4)
+        if (isDraw() && player1point < 3)
         {
-            if (P1point==0)
-                score = "Love";
-            if (P1point==1)
-                score = "Fifteen";
-            if (P1point==2)
-                score = "Thirty";
-            score += "-All";
+            if (isUnderLimit(player1point, 3)) {
+                score = TennisScorboardMap.getWord(player1point);
+            }
+            score += ALL;
         }
-        if (P1point==P2point && P1point>=3)
-            score = "Deuce";
-        
-        if (P1point > 0 && P2point==0)
-        {
-            if (P1point==1)
-                P1res = "Fifteen";
-            if (P1point==2)
-                P1res = "Thirty";
-            if (P1point==3)
-                P1res = "Forty";
-            
-            P2res = "Love";
-            score = P1res + "-" + P2res;
-        }
-        if (P2point > 0 && P1point==0)
-        {
-            if (P2point==1)
-                P2res = "Fifteen";
-            if (P2point==2)
-                P2res = "Thirty";
-            if (P2point==3)
-                P2res = "Forty";
-            
-            P1res = "Love";
-            score = P1res + "-" + P2res;
+        else if (isDraw() && player1point>=3)
+            score = DEUCE;
+        else if (isUnderLimit(player1point, 4)  && isUnderLimit(player2point, 4))
+        {   
+            player1res = TennisScorboardMap.getWord(player1point);
+            player2res = TennisScorboardMap.getWord(player2point);
+
+            score = player1res + "-" + player2res;
         }
         
-        if (P1point>P2point && P1point < 4)
+        if (player1point > player2point && player2point >= 3)
         {
-            if (P1point==2)
-                P1res="Thirty";
-            if (P1point==3)
-                P1res="Forty";
-            if (P2point==1)
-                P2res="Fifteen";
-            if (P2point==2)
-                P2res="Thirty";
-            score = P1res + "-" + P2res;
-        }
-        if (P2point>P1point && P2point < 4)
-        {
-            if (P2point==2)
-                P2res="Thirty";
-            if (P2point==3)
-                P2res="Forty";
-            if (P1point==1)
-                P1res="Fifteen";
-            if (P1point==2)
-                P1res="Thirty";
-            score = P1res + "-" + P2res;
+            score = ADVANTAGE_PLAYER1;
         }
         
-        if (P1point > P2point && P2point >= 3)
+        if (player2point > player1point && player1point >= 3)
         {
-            score = "Advantage player1";
+            score = ADVANTAGE_PLAYER2;
         }
         
-        if (P2point > P1point && P1point >= 3)
-        {
-            score = "Advantage player2";
-        }
-        
-        if (P1point>=4 && P2point>=0 && (P1point-P2point)>=2)
+        if (player1point>=4 && player2point>=0 && winConditionPlayer1())
         {
             score = "Win for player1";
         }
-        if (P2point>=4 && P1point>=0 && (P2point-P1point)>=2)
+        if (player2point>=4 && player1point>=0 && winConditionPlayer2())
         {
             score = "Win for player2";
         }
         return score;
+    }
+
+    private boolean winConditionPlayer1() {
+        return (player1point-player2point)>=2;
+    }
+
+    private boolean winConditionPlayer2() {
+        return (player2point-player1point)>=2;
+    }
+
+    private boolean isUnderLimit(int points, int limit) {
+        return points >= 0 && points < limit;
+    }
+
+    private boolean isDraw() {
+        return player1point == player2point;
     }
     
     public void SetP1Score(int number){
@@ -119,11 +115,11 @@ public class TennisGame2 implements TennisGame
     }
     
     public void P1Score(){
-        P1point++;
+        player1point++;
     }
     
     public void P2Score(){
-        P2point++;
+        player2point++;
     }
 
     public void wonPoint(String player) {
